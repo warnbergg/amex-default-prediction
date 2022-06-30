@@ -13,7 +13,7 @@ def transform_customer_id(s: str) -> int:
     Returns:
         s_trans: Transformed string.
     """
-    s_trans = int(x[-16:], 16)
+    s_trans = int(s[-16:], 16)
     return s_trans
 
 
@@ -28,7 +28,7 @@ def prepare_chunk(chunk: pd.DataFrame) -> pd.DataFrame:
     """
     # Prepare the customer ID
     chunk = chunk.assign(
-        customer_ID = chunk["customer_ID"].apply(tranform_customer_id).astype("int64"),
+        customer_ID = chunk["customer_ID"].apply(transform_customer_id).astype("int64"),
         S_2 = pd.to_datetime(chunk["S_2"]),
     )
 
@@ -44,9 +44,9 @@ def prepare_chunk(chunk: pd.DataFrame) -> pd.DataFrame:
     return chunk.astype(d)
 
 
-def read_prepare_data() -> pd.DataFrame:
+def read_prepare_data(**kwargs) -> pd.DataFrame:
     """Helper to read and prepare dataset."""
-    chunks = pd.read_csv(raw_data_dir + "train_data.csv", chunksize=50000)
+    chunks = pd.read_csv("data/raw/train_data.csv", chunksize=50000)
     return pd.concat([prepare_chunk(chunk) for chunk in chunks])
 
 
